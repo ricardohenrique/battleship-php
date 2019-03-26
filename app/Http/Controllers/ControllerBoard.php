@@ -32,19 +32,11 @@ class ControllerBoard extends Controller
         return response()->json($this->service->getById($id));
     }
 
-    /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function store(Request $request)
     {
         return response()->json($this->service->createBoard());
     }
 
-    /**
-     * @param RequestBoardShip $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function putShip(RequestBoardShip $request, $boardId, $shipId)
     {
         return response()->json($this->service->setShipOnBoard($boardId, $shipId, $request->all()));
