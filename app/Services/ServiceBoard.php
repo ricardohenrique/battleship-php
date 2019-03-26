@@ -2,28 +2,20 @@
 
 namespace App\Services;
 
+
+use App\Supports\Battleship;
 use App\Models\Board as ModelBoard;
 use App\Models\Ship as ModelShip;
-use App\Services\ServiceShip;
 use App\Exceptions\IllegalPositionException;
 use Log;
 
 class ServiceBoard
 {
+    use Battleship;
+
     public $board;
 
     public $serviceShip;
-
-    /**
-     * Number of columns on the board
-     */
-    public const NUMBERCOLUMNS = 10;
-
-    /**
-     * Number of the lines on the board
-     */
-    public const NUMBERLINES = 10;
-
 
     public function __construct(ModelBoard $board, ServiceShip $serviceShip)
     {
@@ -41,31 +33,9 @@ class ServiceBoard
         return $this->board->find($id);
     }
 
-    /**
-     * @return array
-     */
-    public function createBoard(): array
+    public function createBoard(): ModelBoard
     {
-        $fieldPlayerOne = self::buildField();
-        $data['board_player_one'] = $this->board->create(['field' => json_encode($fieldPlayerOne)]);
-
-        $fieldPlayerTwo = self::buildField();
-        $data['board_player_two'] = $this->board->create(['field' => json_encode($fieldPlayerTwo)]);
-        return $data;
-    }
-
-    /**
-     * @return array
-     */
-    public static function buildField(): array
-    {
-        $board = [];
-        for ($line = 0; $line < self::NUMBERLINES; $line++) {
-            for ($column = 0; $column < self::NUMBERCOLUMNS; $column++ ){
-//                $board[$line][$column] = "$line : $column";
-                $board[$line][$column] = 00;
-            }
-        }
+        $board = $this->board->create(['field' => json_encode(self::buildField())]);
         return $board;
     }
 
@@ -81,6 +51,9 @@ class ServiceBoard
         {
             throw new IllegalPositionException("Illegal position", 400);
         }
+
+//        echo self::showField($board->field);
+//        dd(count($board->field), 0);
 
         $field = $this->putShipOnBoard($positionX, $positionY, $ship, $board->field, $vertical);
 
@@ -128,43 +101,6 @@ class ServiceBoard
         }
 
         return true;
-    }
-
-    /**
-     * @param array $board
-     * @return string
-     */
-    private static function showField(array $board): string
-    {
-        $prettyBoard = "";
-        foreach ($board as $lines) {
-            foreach ($lines as $column){
-                $prettyBoard .= str_pad("[$column]", 5);
-            }
-            $prettyBoard .= "\n";
-        }
-
-        return $prettyBoard;
-    }
-
-    private function getIndexLetters(string $letter): int
-    {
-        return array_search(strtoupper($letter), $this->getLetters());
-    }
-
-    private function getIndexNumbers(int $number): int
-    {
-        return array_search($number, $this->getNumbers());
-    }
-
-    private function getLetters()
-    {
-        return range('A', 'J');
-    }
-
-    private function getNumbers()
-    {
-        return range(1, 10);
     }
 
     private function swapTwoVariables(&$x, &$y) {
