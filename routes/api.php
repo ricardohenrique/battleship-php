@@ -13,10 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('boards', 'ControllerBoard@index');
-Route::get('boards/{id}', 'ControllerBoard@show');
-Route::post('boards', 'ControllerBoard@store');
-Route::post('boards/{board_id}/ships/{ship_id}', 'ControllerBoard@putShip');
-Route::get('ships', 'ControllerShip@index');
-Route::get('ships/{id}', 'ControllerShip@show');
+Route::resource('boards', 'ControllerBoard');
+Route::post('boards/{board_id}/ships/{ships_id}', 'ControllerBoard@putShip');
+Route::resource('ships', 'ControllerShip');
+Route::resource('games', 'ControllerGame');
+Route::post('games/{game_id}/shots', 'ControllerShot@shot');
+
 
