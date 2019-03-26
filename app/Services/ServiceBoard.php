@@ -52,9 +52,6 @@ class ServiceBoard
             throw new IllegalPositionException("Illegal position", 400);
         }
 
-//        echo self::showField($board->field);
-//        dd(count($board->field), 0);
-
         $field = $this->putShipOnBoard($positionX, $positionY, $ship, $board->field, $vertical);
 
         $board->field = json_encode($field);
